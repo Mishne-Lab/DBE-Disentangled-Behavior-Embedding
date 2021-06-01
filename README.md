@@ -1,1 +1,1 @@
-# DBE---Disentangled-Behavior-Embedding
+# DBE: Disentangled-Behavior-Embedding
