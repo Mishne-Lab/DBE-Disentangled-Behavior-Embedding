@@ -187,7 +187,6 @@ class DisAE(nn.Module):
             p1, p2 = self.decoder1(p1), self.decoder2(p2)
         p1, p2 = p1.view(-1, self.fpc, *p1.shape[1:]), p2.view(-1, self.fpc, *p2.shape[1:])
 
-
         return p1, p2
 
 
@@ -284,7 +283,6 @@ class DBE(nn.Module):
             g = g * torch.matmul(one_hot, self.logvars.weight.mul(0.5).exp()) + torch.matmul(one_hot, self.centroids.weight)
         else:
             g = g + torch.matmul(one_hot, self.centroids.weight)
-        self.latent = mu.detach()
         self.cluster = one_hot.detach()
 
         s = []
@@ -303,7 +301,7 @@ class DBE(nn.Module):
                 print('pre-softmax tensors contain inf!')
             prob2 = F.log_softmax(pre_softmax, dim=-1)
         p = s
-        self.post_pose = p.detach()
+        self.latent = p.detach()
 
         # rollout / dynamic / pose decoding
         if self.straight_through:
@@ -348,7 +346,6 @@ class DBE(nn.Module):
             g = g * torch.matmul(one_hot, self.logvars.weight.mul(0.5).exp()) + torch.matmul(one_hot, self.centroids.weight)
         else:
             g = g + torch.matmul(one_hot, self.centroids.weight)
-        self.latent = mu.detach()
         self.cluster = one_hot.detach()
 
         s = []
@@ -371,7 +368,7 @@ class DBE(nn.Module):
             s.append(si)
         s = torch.stack(s, dim=1)
         p = s
-        self.post_pose = p.detach()
+        self.latent = p.detach()
 
         # rollout / dynamic / pose decoding
         p = self.relu(self.combine(torch.cat([p.view(-1, self.state_dim, 1, 1).repeat(1, 1, 8, 8), ct.flatten(end_dim=1)], dim=1)))

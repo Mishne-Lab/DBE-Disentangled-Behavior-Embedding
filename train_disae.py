@@ -40,7 +40,7 @@ def train(args):
 
     # data loading
     transform = ResizeVideo(args.frame_size)
-    train_set = BehavioralVideo(args.frames_per_clip, frame_rate=args.frame_rate, transform=transform, mod='train', rand_crop=True, jitter=True, return_first_frame=True)
+    train_set = BehavioralVideo(args.frames_per_clip, frame_rate=args.frame_rate, interval=[args.start, args.end], transform=transform, mod='train', rand_crop=True, jitter=True, return_first_frame=True)
     train_loader = DataLoader(train_set, batch_size=args.batch_size, shuffle=True, num_workers=args.workers)
     
     # model building

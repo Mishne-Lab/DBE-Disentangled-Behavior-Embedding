@@ -19,6 +19,8 @@ def parse_args():
     parser.add_argument('-fps', '--frame_rate', default=1, type=int, metavar='N', help='# of frames per second')
     parser.add_argument('-fs', '--frame_size', default=128, type=int, metavar='N', help='# of frames dimensions')
     parser.add_argument('-np', '--n_past', default=10, type=int, metavar='N', help='# of past frames to infer z0 (DBE only)')
+    parser.add_argument('--start', default=750, help='selected interval of videos')
+    parser.add_argument('--end', default=1150, help='selected interval of videos')
 
     parser.add_argument('-d', '--device', default='cuda', help='device')
     parser.add_argument('-u', '--gpus', default='', help='index of specified gpus')
