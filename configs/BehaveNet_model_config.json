@@ -1,0 +1,31 @@
+{
+    "model": "BehaveNet",
+    "latent": 16,
+    "frames_per_clip": 300,
+
+    "encoder":
+    {
+        "blocks": 4,
+        "input_size": [128, 128, 2],
+        "channels": [32, 64, 128, 256],
+        "kernel_size": [3, 3, 3, 3],
+        "stride": [1, 1, 1, 1],
+        "padding": [1, 1, 1, 1],
+        "last_conv_size": [8, 8, 256],
+        "kernel_size1d": [3, 3, 3, 3],
+        "mean_pool": true,
+        "down": "maxpool_unpool",
+        "motion_only": false
+    },
+
+    "decoder":
+    {
+        "blocks": 4,
+        "first_deconv_size": [256, 8, 8],
+        "channels": [128, 64, 32, 2],
+        "kernel_size": [3, 3, 3, 3],
+        "stride": [2, 2, 2, 2],
+        "padding": [1, 1, 1, 1],
+        "up": "unpool"
+    }
+}

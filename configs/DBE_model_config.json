@@ -1,0 +1,58 @@
+{
+    "model": "DBE",
+    "pose": 8,
+    "content": 1024,
+    "frames_per_clip": 20,
+
+    "state_dim": 8,
+    "gaussian_dim": 4,
+    "n_clusters": 30,
+    "straight_through": true,
+    "ct_cond": false,
+    "independent_cluster": false,
+    "different_vars": false,
+    "tau": 1, 
+    "bidirectional": true,
+    "rnn_layers": 1,
+    "beta": [0.00005, 0.00005, 0.00001], 
+    "n_past": 10,
+
+    "encoder_ps":
+    {
+        "blocks": 4,
+        "input_size": [128, 128, 1],
+        "channels": [32, 64, 128, 256],
+        "kernel_size": [5, 5, 5, 5],
+        "stride": [1, 1, 1, 1],
+        "padding": [2, 2, 2, 2],
+        "last_conv_size": [8, 8, 256],
+        "mean_pool": true,
+        "down": "maxpool",
+        "motion_only": false
+    },
+
+    "encoder_ct":
+    {
+        "blocks": 4,
+        "input_size": [128, 128, 1],
+        "channels": [32, 64, 128, 256],
+        "kernel_size": [5, 5, 5, 5],
+        "stride": [1, 1, 1, 1],
+        "padding": [2, 2, 2, 2],
+        "last_conv_size": [8, 8, 256],
+        "mean_pool": false,
+        "down": "conv",
+        "motion_only": false
+    },
+
+    "decoder":
+    {
+        "blocks": 4,
+        "first_deconv_size": [256, 8, 8],
+        "channels": [128, 64, 32, 1],
+        "kernel_size": [5, 5, 5, 5],
+        "stride": [2, 2, 2, 2],
+        "padding": [2, 2, 2, 2],
+        "up": "upsample"
+    }
+}

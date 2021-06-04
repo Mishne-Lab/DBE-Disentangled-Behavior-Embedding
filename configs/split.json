@@ -1,0 +1,8 @@
+{
+    "train":[
+        "/data2/Dropbox/Shahar/learning project/experiments/Videos/PT3/2018-03-13/EPC_PT3_2018-03-13_001/movie_comb.avi"
+    ],
+    "test":[
+        "/data2/Dropbox/Shahar/learning project/experiments/Videos/PT3/2018-03-13/EPC_PT3_2018-03-13_002/movie_comb.avi"
+    ]
+}
