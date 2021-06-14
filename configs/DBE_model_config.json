@@ -11,6 +11,7 @@
     "ct_cond": false,
     "independent_cluster": false,
     "different_vars": false,
+    "context_substraction": false,
     "tau": 1, 
     "bidirectional": true,
     "rnn_layers": 1,
