@@ -45,16 +45,16 @@ def train(args):
     
     # model building
     if not args.resume:
-        with open(os.path.join(args.config_dir, "{}_model_config.json".format(args.model)), 'r') as f:
+        with open(os.path.join(args.config_dir, 'DisAE_model_config.json'), 'r') as f:
             model_config = json.load(f)
         model_config["frames_per_clip"] = args.frames_per_clip
         model_config["criterion"] = args.criterion
         model_config["first_frame"] = True
         # reproductibility
-        with open(os.path.join(save_dir, "{}_model_config.json".format(args.model)), 'w') as f:
+        with open(os.path.join(save_dir, 'DisAE_model_config.json'), 'w') as f:
             json.dump(model_config, f)
     else:
-        with open(os.path.join(save_dir, '{}_model_config.json'.format(args.model)), 'r') as f:
+        with open(os.path.join(save_dir, 'DisAE_model_config.json'), 'r') as f:
             model_config = json.load(f)
     
     print('Model: {}'.format(model_config["model"]))
@@ -69,8 +69,6 @@ def train(args):
                                                                                                 lr=args.lr) 
     scheduler = optim.lr_scheduler.StepLR(optimizer, args.lr_step, args.lr_gamma)
     meter = deque(maxlen=25)
-    if args.model == 'RDMVAE' or args.model == 'RDUMVAE':
-        rnn_meter = deque(maxlen=25)
     print('Learning rate: {}'.format(args.lr))
     print('Batch size: {}'.format(args.batch_size))
 
@@ -131,7 +129,6 @@ def train(args):
                     'epoch': epoch,
                     'model_state_dict': model.module.state_dict(),
                     'optimizer_state_dict': optimizer.state_dict(),
-                    'loss': validate_error,
                     }, '{}/checkpoint.pth'.format(save_dir))
 
     file.close()
