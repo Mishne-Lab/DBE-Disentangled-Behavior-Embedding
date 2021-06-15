@@ -29,7 +29,6 @@ def parse_args():
     parser.add_argument('-wp', '--warmups', default=50, type=int, metavar='N', help='# of total warm up epochs')
     parser.add_argument('-j', '--workers', default=8, type=int, metavar='N', help='# of data loaders (default: 16)')
     parser.add_argument('--lr', default=0.001, type=float, help='initial learning rate (default: 0.001)')
-    parser.add_argument('--rnn_lr', default=0, type=float, help='initial learning rate of rnn if necessary (default: 0.001)')
     parser.add_argument('--lr-step', default=10000, type=int, help='decrease lr every these iterations')
     parser.add_argument('--lr-gamma', default=0.1, type=float, help='decrease lr by a factor of lr-gamma')
     parser.add_argument('--momentum', default=0.9, type=float, metavar='M')

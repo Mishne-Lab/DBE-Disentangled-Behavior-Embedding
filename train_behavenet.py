@@ -64,9 +64,7 @@ def train(args):
     criterion = globals()[model_config["criterion"]]
 
     # optimizer initialization
-    optimizer = optim.Adam(model.parameters(), lr=args.lr) if args.rnn_lr == 0 else optim.Adam([{'params': [p for n,p in model.named_parameters() if 'rnn' not in n]}, 
-                                                                                                {'params': model.rnn.parameters(), 'lr': args.rnn_lr}], 
-                                                                                                lr=args.lr) 
+    optimizer = optim.Adam(model.parameters(), lr=args.lr)
     scheduler = optim.lr_scheduler.StepLR(optimizer, args.lr_step, args.lr_gamma)
     meter = deque(maxlen=25)
     print('Learning rate: {}'.format(args.lr))
