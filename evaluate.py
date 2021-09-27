@@ -38,10 +38,10 @@ def evaluate(args):
 
     print('Model: {}'.format(model_config["model"]))
     from models.nets import BehaveNet, DisAE, DBE
-    best_model = eval(model_config["model"])(model_config)
+    latest_model = eval(model_config["model"])(model_config)
 
-    best_dict = torch.load('{}/best_model.pth'.format(save_dir), map_location='cpu')
-    best_model.load_state_dict(best_dict)
+    latest_dict = torch.load('{}/latest_model.pth'.format(save_dir), map_location='cpu')
+    latest_model.load_state_dict(latest_dict)
 
     # read criterion
     criterion = globals()[model_config["criterion"]]
@@ -50,17 +50,17 @@ def evaluate(args):
         if args.gpus:
             device_ids = [int(idx) for idx in list(args.gpus)]
             device = '{}:{}'.format(args.device, device_ids[0])
-            best_model = nn.DataParallel(best_model, device_ids=device_ids).to(device)
+            latest_model = nn.DataParallel(latest_model, device_ids=device_ids).to(device)
         else:
-            device = args.device
-            best_model = nn.DataParallel(best_model).to(device)
+            device = torch.device('cuda:0')
+            latest_model = nn.DataParallel(latest_model).to(device)
     elif args.device == 'cpu':
-        device = args.device
+        device = torch.device('cpu')
 
     with open('{}/{}_trials.pkl'.format(save_dir, mod), 'wb') as f:
         pickle.dump(eval_set.trials, f)
 
-    best_model.eval()
+    latest_model.eval()
     
     print('start evaluating...')
     latents, contents, states = [], [], []
@@ -70,10 +70,14 @@ def evaluate(args):
 
             front, side = front.to(device), side.to(device)
             if model_config["model"] == 'DBE':
-                (output1, output2), _, _, probs = best_model(front, side, n_past=args.n_past, n_future=args.frames_per_clip-args.n_past)
+                try:
+                    latest_model.set_steps(args.n_past, args.frames_per_clip-args.n_past)
+                except:
+                    latest_model.module.set_steps(args.n_past, args.frames_per_clip-args.n_past)
+                (output1, output2), _, _, probs = latest_model(front, side)
                 states.append(probs[0].detach())
             else:
-                output1, output2 = best_model(front, side)
+                output1, output2 = latest_model(front, side)
 
             if use_first_frame:
                 loss = criterion(output1, front[:, 1:]) + criterion(output2, side[:, 1:])
@@ -81,7 +85,10 @@ def evaluate(args):
                 loss = criterion(output1, front) + criterion(output2, side)
             loss_track.append(loss.item())
 
-            latents.append(best_model.module.latent.detach())
+            try:
+                latents.append(latest_model.latent.detach())
+            except:
+                latents.append(latest_model.module.latent.detach())
 
         print('Saving latent embedding...')
         save_file(latents, file_dir='{}/{}_latents.pkl'.format(save_dir, mod))

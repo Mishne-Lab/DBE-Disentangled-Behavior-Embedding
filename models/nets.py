@@ -155,7 +155,7 @@ class DisAE(nn.Module):
         self.relu = nn.LeakyReLU(0.2, inplace=True)
         
 
-    def forward(self, x1, x2, pred_state=False):
+    def forward(self, x1, x2):
         
         # context / style / content encoding
         if self.first_frame:
@@ -248,9 +248,13 @@ class DBE(nn.Module):
             self.combine = nn.ConvTranspose2d(config["state_dim"]+config["content"], 256*2, 8, stride=1)
 
         self.relu = nn.LeakyReLU(0.2, inplace=True)
+
+    def set_steps(self, n_past, n_future):
+        self.n_past, self.n_future = n_past, n_future
         
-    def forward(self, x1, x2, n_past=None, n_future=None):
+    def forward(self, x1, x2):
         
+        n_past, n_future = self.n_past, self.n_future
         assert self.fpc == n_past + n_future
         if self.first_frame:
             c1, c2 = self.encoder1_ct(x1[:, :1]), self.encoder2_ct(x2[:, :1])

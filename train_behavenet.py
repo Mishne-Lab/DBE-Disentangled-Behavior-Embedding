@@ -81,19 +81,16 @@ def train(args):
 
     # parallelism
     if args.device == 'cuda':
+        assert torch.cuda.is_available()
         if args.gpus:
             device_ids = [int(idx) for idx in list(args.gpus)]
             device = '{}:{}'.format(args.device, device_ids[0])
             model = nn.DataParallel(model, device_ids=device_ids).to(device)
         else:
-            device = args.device
+            device = torch.device('cuda:0')
             model = nn.DataParallel(model).to(device)
-        for state in optimizer.state.values():
-            for k, v in state.items():
-                if torch.is_tensor(v):
-                    state[k] = v.to(device)
     elif args.device == 'cpu':
-        device = args.device
+        device = torch.device('cpu')
 
     # model training
     print('start training...')
@@ -120,15 +117,24 @@ def train(args):
         if (epoch+1) % args.validate_freq == 0:   
 
             print('save model')
-            torch.save(model.module.state_dict(), '{}/best_model.pth'.format(save_dir))
-
             # save checkpoint
-            torch.save({
+            try:
+                torch.save({
+                    'epoch': epoch,
+                    'model_state_dict': model.state_dict(),
+                    'optimizer_state_dict': optimizer.state_dict(),
+                    }, '{}/checkpoint.pth'.format(save_dir))
+            except:
+                torch.save({
                     'epoch': epoch,
                     'model_state_dict': model.module.state_dict(),
                     'optimizer_state_dict': optimizer.state_dict(),
                     }, '{}/checkpoint.pth'.format(save_dir))
 
+    try:
+        torch.save(model.state_dict(), '{}/latest_model.pth'.format(save_dir))
+    except:
+        torch.save(model.module.state_dict(), '{}/latest_model.pth'.format(save_dir))
     file.close()
 
 
