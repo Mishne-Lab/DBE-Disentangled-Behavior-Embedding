@@ -1,6 +1,6 @@
 # DBE: Disentangled-Behavior-Embedding
 
-Official implementation of [NeurIPS 2021 - Learning Disentangled Behavior Embeddings](https://openreview.net/forum?id=ThbM9_6DNU).
+Official implementation of [Learning Disentangled Behavior Embeddings (NeurIPS 2021)](https://openreview.net/forum?id=ThbM9_6DNU).
 
 ## Environment requirement
 The whole experiment process is based on PyTorch:
